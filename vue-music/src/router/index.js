@@ -10,6 +10,10 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
+      path: '/',
+      redirect: '/recommend'
+    },
+    {
       path: '/recommend',
       component: Recommend
     },
@@ -25,5 +29,6 @@ export default new Router({
       path: '/search',
       component: Search
     }
-  ]
+  ],
+  linkActiveClass: 'active'
 });
