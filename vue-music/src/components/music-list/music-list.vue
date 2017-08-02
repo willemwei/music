@@ -17,7 +17,10 @@
     <v-scroll @scrollBs="scroll" :data="songs" class="list" ref="list" :probe-type="probeType"
               :listen-scroll="listenScroll">
       <div class="song-list-wrapper">
-        <v-song-list :songs="songs"></v-song-list>
+        <v-song-list @select="selectItem" :songs="songs"></v-song-list>
+      </div>
+      <div class="loading-container" v-show="!songs.length">
+        <v-loading></v-loading>
       </div>
     </v-scroll>
   </div>
@@ -27,6 +30,8 @@
   import Scroll from 'base/scroll/scroll';
   import SongList from 'base/song-list/song-list';
   import {prefixStyle} from 'common/js/dom';
+  import Loading from 'base/loading/loading';
+  import {mapActions} from 'vuex';
 
   const RESERVED_HEIGHT = 40;
   const transform = prefixStyle('transform');
@@ -56,7 +61,8 @@
     },
     components: {
       'v-scroll': Scroll,
-      'v-song-list': SongList
+      'v-song-list': SongList,
+      'v-loading': Loading
     },
     computed: {
       bgStyle() {
@@ -77,7 +83,16 @@
       },
       back() {
         this.$router.back();
-      }
+      },
+      selectItem(item, index) {
+        this.selectPlay({
+          list: this.songs,
+          index: index
+        });
+      },
+      ...mapActions([
+        'selectPlay'
+      ])
     },
     watch: {
       scrollY(newY) {

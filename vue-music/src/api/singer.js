@@ -2,7 +2,7 @@ import jsonp from 'common/js/jsonp';
 import {commonParam, options} from './config';
 
 export function getSingerList() {
-  const url = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg'
+  const url = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg';
 
   const data = Object.assign({}, commonParam, {
     channel: 'singer',
@@ -28,7 +28,7 @@ export function getSingerDetail(singerId) {
     num: 100,
     order: 'listen',
     songtatus: 1,
-    singerid: singerId,
+    singermid: singerId,
     g_tk: 1849388436,
     platform: 'h5page'
   });
