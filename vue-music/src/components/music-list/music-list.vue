@@ -1,13 +1,21 @@
 <template>
   <div class="music-list">
-    <div class="back">
+    <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
-      <div class="filter"></div>
+      <div class="play-wrapper" ref="playWrapper">
+        <div class="play" v-show="songs.length>0">
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
+      <div class="filter" ref="filter"></div>
     </div>
-    <v-scroll :data="songs" class="list" ref="list">
+    <div class="bg-layer" ref="bgLayer"></div>
+    <v-scroll @scrollBs="scroll" :data="songs" class="list" ref="list" :probe-type="probeType"
+              :listen-scroll="listenScroll">
       <div class="song-list-wrapper">
         <v-song-list :songs="songs"></v-song-list>
       </div>
@@ -18,6 +26,11 @@
 <script type="text/ecmascript-6">
   import Scroll from 'base/scroll/scroll';
   import SongList from 'base/song-list/song-list';
+  import {prefixStyle} from 'common/js/dom';
+
+  const RESERVED_HEIGHT = 40;
+  const transform = prefixStyle('transform');
+  const backdrop = prefixStyle('backdrop');
 
   export default {
     props: {
@@ -36,6 +49,11 @@
         default: ''
       }
     },
+    data() {
+      return {
+        scrollY: 0
+      }
+    },
     components: {
       'v-scroll': Scroll,
       'v-song-list': SongList
@@ -46,7 +64,50 @@
       }
     },
     mounted() {
+      this.minTranslateY = -this.$refs.bgImage.clientHeight + RESERVED_HEIGHT;
       this.$refs.list.$el.style.top = `${this.$refs.bgImage.clientHeight}px`;
+    },
+    created() {
+      this.probeType = 3;
+      this.listenScroll = true;
+    },
+    methods: {
+      scroll(pos) {
+        this.scrollY = pos.y;
+      },
+      back() {
+        this.$router.back();
+      }
+    },
+    watch: {
+      scrollY(newY) {
+        let translateY = Math.max(this.minTranslateY, newY);
+        let zIndex = 0;
+        let scale = 1;
+        let blur = 0;
+        this.$refs.bgLayer.style[transform] = `translate3d(0, ${translateY}px, 0)`;
+        if (newY < this.minTranslateY) {
+          zIndex = 10;
+          this.$refs.bgImage.style.paddingTop = 0;
+          this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`;
+          this.$refs.playWrapper.style.display = 'none';
+        } else {
+          this.$refs.bgImage.style.paddingTop = '70%';
+          this.$refs.bgImage.style.height = 0;
+          this.$refs.playWrapper.style.display = '';
+        }
+        const percent = Math.abs(newY / this.minTranslateY);
+        if (newY > 0) {
+          scale = 1 + percent;
+          zIndex = 9;
+        } else {
+          blur = Math.min(20 * percent, 20);
+        }
+
+        this.$refs.bgImage.style.zIndex = zIndex;
+        this.$refs.bgImage.style[transform] = `scale(${scale})`;
+        this.$refs.filter.style[backdrop] = `blur(${blur}px)`;
+      }
     }
   };
 </script>
@@ -137,6 +198,7 @@
       background: @color-background;
     }
     .list {
+      /*overflow: hidden;*/
       position: fixed;
       top: 0;
       bottom: 0;
