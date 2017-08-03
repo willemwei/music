@@ -20,7 +20,7 @@ const mutations = {
     state.currentIndex = index;
   },
   [types.SET_PLAY_MODE](state, mode) {
-    state.playMode = mode;
+    state.mode = mode;
   }
 };
 
