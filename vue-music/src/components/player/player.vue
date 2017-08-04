@@ -72,7 +72,8 @@
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"></audio>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"
+           @ended="end"></audio>
   </div>
 </template>
 
@@ -173,6 +174,14 @@
       togglePlaying() {
         this.setPlayingState(!this.playing);
       },
+      end() {
+        if (this.mode === playMode.loop) {
+          this.$refs.audio.currentTime = 0;
+          this.$refs.audio.play();
+        } else {
+          this.next();
+        }
+      },
       next() {
         if (!this.songReady) {
           return;
@@ -265,12 +274,17 @@
       })
     },
     watch: {
-      currentSong() {
+      currentSong(newSong, oldSong) {
+        console.log(newSong, oldSong);
+//        if (oldSong !== undefined && newSong.id === oldSong.id) {
+//          return;
+//        }
+
         this.$nextTick(() => {
           this.$refs.audio.play();
         });
       },
-      playing(newPlaying) {
+      playing(newPlaying, old) {
         this.$nextTick(() => {
           const audio = this.$refs.audio;
           this.playing ? audio.play() : audio.pause();

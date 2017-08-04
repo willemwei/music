@@ -52,7 +52,9 @@
         this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px, 0, 0)`;
       },
       progressClick(e) {
-        this._offset(e.offsetX - 8);
+        const rect = this.$refs.progressBar.getBoundingClientRect();
+        const offsetWidth = e.pageX - rect.left;
+        this._offset(offsetWidth - 8);
         this._triggerPercent();
       },
       _triggerPercent() {
