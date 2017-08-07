@@ -89,6 +89,9 @@
         this.touch.anchorIndex = anchorIndex;
         this._scrollTo(anchorIndex);
       },
+      refresh() {
+        this.$refs.listview.refresh();
+      },
       onShortcutTouchMove(e) {
         let firstTouch = e.touches[0];
         this.touch.y2 = firstTouch.pageY;
