@@ -59,12 +59,10 @@
     },
     methods: {
       handlePlayList(playlist) {
-        if (!this.checkLoaded) {
-          const bottom = playlist.length > 0 ? '60px' : '';
-          this.$refs.recommend.style.bottom = bottom;
-          this.$refs.recommendCont.refresh();
-          this.checkLoaded = true;
-        }
+        const bottom = playlist.length > 0 ? '60px' : '';
+        this.$refs.recommend.style.bottom = bottom;
+        this.$refs.recommendCont.refresh();
+        this.checkLoaded = true;
       },
       _getRecommend() {
         getRecommend().then((res) => {

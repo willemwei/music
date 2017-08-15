@@ -1,5 +1,5 @@
 <template>
-  <div class="rank" ref="rank">
+  <div class="rank-wrapper" ref="rank">
     <v-scroll class="toplist" :data="topList" ref="topList">
       <ul>
         <li class="item" v-for="item in topList" @click="selectItem(item)">
@@ -75,7 +75,7 @@
   @import url('../../common/less/variable');
   @import url('../../common/less/mixin');
 
-  .rank {
+  .rank-wrapper {
     position: fixed;
     width: 100%;
     top: 88px;
