@@ -57,6 +57,22 @@ apiRouter.get('/getTopL', function (req, res) {
   });
 });
 
+apiRouter.get('/getSearchSong', function (req, res) {
+  const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp';
+
+  axios.get(url, {
+    headers: {
+      referer: 'https://y.qq.com/portal/playlist.html',
+      host: 'c.y.qq.com'
+    },
+    params: req.query
+  }).then((response) => {
+    res.json(response.data);
+  }).catch((e) => {
+    console.log(e);
+  });
+});
+
 apiRouter.get('/lyric', function (req, res) {
   const url = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg';
 
