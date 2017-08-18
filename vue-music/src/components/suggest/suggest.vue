@@ -1,6 +1,6 @@
 <template>
   <v-scroll class="suggest" :data="result" :pullup="pullup" @scrollToEnd="searchMore" @beforeScroll="listScroll"
-            :beforeScroll="beforeScroll">
+            :beforeScroll="beforeScroll" ref="suggest">
     <ul class="suggest-list">
       <li @click="selectItem(item)" class="suggest-item" v-for="item in result">
         <div class="icon">
@@ -103,6 +103,9 @@
         }
 
         this.$emit('select');
+      },
+      refresh() {
+        this.$refs.suggest.refresh();
       },
       listScroll() {
         this.$emit('listScroll');
