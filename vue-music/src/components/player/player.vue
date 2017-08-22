@@ -93,12 +93,13 @@
       </div>
     </transition>
     <v-playlist ref="playlist"></v-playlist>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"
+           @ended="end"></audio>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import {mapGetters, mapMutations} from 'vuex';
+  import {mapGetters, mapMutations, mapActions} from 'vuex';
   import animations from 'create-keyframe-animation';
   import {prefixStyle} from 'common/js/dom';
   import ProgressBar from 'base/progress-bar/progress-bar';
@@ -108,11 +109,13 @@
   import Lyric from 'lyric-parser';
   import scroll from 'base/scroll/scroll';
   import PlayList from 'components/playlist/playlist';
+  import {playMixin} from 'common/js/mixin';
 
   const transform = prefixStyle('transform');
   const transitionDuration = prefixStyle('transitionDuration');
 
   export default {
+    mixins: [playMixin],
     data() {
       return {
         songReady: false,
@@ -139,17 +142,10 @@
       percent() {
         return this.currentTime / this.currentSong.duration;
       },
-      iconMode() {
-        return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random';
-      },
       ...mapGetters([
         'fullScreen',
-        'playlist',
-        'currentSong',
         'playing',
-        'currentIndex',
-        'mode',
-        'sequenceList'
+        'currentIndex'
       ])
     },
     methods: {
@@ -312,6 +308,7 @@
       },
       ready() {
         this.songReady = true;
+        this.savePlayHistory(this.currentSong);
       },
       error() {
         this.songReady = true;
@@ -329,6 +326,10 @@
         });
       },
       handleLyric({lineNum, txt}) {
+        if (!this.$refs.lyricList) {
+          return;
+        }
+
         this.currentLineNum = lineNum;
         if (lineNum > 5) {
           let lineEl = this.$refs.lyricLine[lineNum - 5];
@@ -401,14 +402,17 @@
         setCurrentIndex: 'SET_CURRENT_INDEX',
         setPlayMode: 'SET_PLAY_MODE',
         setPlayList: 'SET_PLAYLIST'
-      })
+      }),
+      ...mapActions([
+        'savePlayHistory'
+      ])
     },
     created() {
       this.touch = {};
     },
     watch: {
       currentSong(newSong, oldSong) {
-        if (oldSong !== undefined && newSong.id === oldSong.id) {
+        if (!newSong || (oldSong !== undefined && newSong.id === oldSong.id)) {
           return;
         }
 
@@ -424,6 +428,9 @@
       playing(newPlaying, old) {
         this.$nextTick(() => {
           const audio = this.$refs.audio;
+          if (!audio) {
+            return;
+          }
           this.playing ? audio.play() : audio.pause();
         });
       }
