@@ -88,3 +88,25 @@ export function deleteSearchHistory({commit}, query) {
 export function clearSearchHistory({commit}) {
   commit(types.SET_SEACH_HISTRY, clearSearch());
 }
+
+export function deleteSong({commit, state}, song) {
+  let playlist = state.playlist.slice();
+  let sequenceList = state.sequenceList.slice();
+  let currentIndex = state.currentIndex;
+  let pIndex = getIndex(playlist, song);
+  playlist.splice(pIndex, 1);
+  let sIndex = getIndex(sequenceList, song);
+  sequenceList.splice(sIndex, 1);
+
+  if (currentIndex > pIndex || currentIndex === playlist.length) {
+    currentIndex--;
+  }
+
+  commit(types.SET_PLAYLIST, playlist);
+  commit(types.SET_SEQUENCE_LIST, sequenceList);
+  commit(types.SET_CURRENT_INDEX, currentIndex);
+
+  if (!playlist.length) {
+    commit(!types.SET_PLAYING_STATE, false);
+  }
+}

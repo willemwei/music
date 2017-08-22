@@ -87,13 +87,13 @@
             <i class="icon-mini" :class="miniIcon" @click.prevent.stop="togglePlaying"></i>
           </v-progress-circle>
         </div>
-        <div class="control">
+        <div class="control" @click.stop="showPlayList">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
-    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime"
-           @ended="end"></audio>
+    <v-playlist ref="playlist"></v-playlist>
+    <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
 
@@ -107,6 +107,7 @@
   import {shuffle} from 'common/js/util';
   import Lyric from 'lyric-parser';
   import scroll from 'base/scroll/scroll';
+  import PlayList from 'components/playlist/playlist';
 
   const transform = prefixStyle('transform');
   const transitionDuration = prefixStyle('transitionDuration');
@@ -391,6 +392,9 @@
         this.$refs.middleL.style.opacity = opacity;
         this.$refs.middleL.style[transitionDuration] = '300ms';
       },
+      showPlayList() {
+        this.$refs.playlist.show();
+      },
       ...mapMutations({
         setFullScreen: 'SET_FULL_SCREEN',
         setPlayingState: 'SET_PLAYING_STATE',
@@ -427,7 +431,8 @@
     components: {
       'v-progress-bar': ProgressBar,
       'v-progress-circle': ProgressCicle,
-      'v-scroll': scroll
+      'v-scroll': scroll,
+      'v-playlist': PlayList
     }
   };
 </script>
