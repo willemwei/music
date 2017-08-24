@@ -10,6 +10,8 @@ import store from './store/index';
 
 import 'common/less/index.less';
 
+import vConsole from 'vconsole';
+
 fastclick.attach(document.body); // 没有300ms的延时
 Vue.use(VueLazyLoad, {
   loading: require('common/image/default.png')
