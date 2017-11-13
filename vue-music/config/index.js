@@ -29,9 +29,6 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/v8/fcg-bin/fcg_v8_singer_track_cp.fcg': {
-        target: 'https://c.y.qq.com'
-      }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README

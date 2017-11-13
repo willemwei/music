@@ -37,7 +37,7 @@ const Search = (resolve) => {
 };
 
 const SingerDetail = (resolve) => {
-  import('components/disc/disc').then((modeule) => {
+  import('components/singer-detail/singer-detail').then((modeule) => {
     resolve(modeule);
   });
 };
